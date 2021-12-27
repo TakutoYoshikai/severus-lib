@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aes256cbc": "github:TakutoYoshikai/aes256cbc"
+    "aes256cbc": "github:TakutoYoshikai/aes256cbc",
+    "ipfs-http-client": "49.0.4",
+    "web3-eth-accounts": "^1.6.1"
   }
 }
