@@ -8,6 +8,8 @@ const crypto = require("crypto");
 const Accounts = require("web3-eth-accounts");
 const accounts = new Accounts(rpcHost);
 
+const Client = require("./client");
+
 const IpfsHttpClient = require("ipfs-http-client");
 const ipfsClient = IpfsHttpClient({
   host: "ipfs.infura.io",
@@ -75,7 +77,8 @@ function privateKeyToAddress(privateKey) {
   return accounts.privateKeyToAccount(privateKey).address;
 }
 
-async function polygonGet(privateKey) {
+async function polygonGet(password) {
+  const privateKey = getPolygonPrivateKey(password);
   const address = privateKeyToAddress(privateKey);
   const baseUrl = "http://localhost:3000";
   const client = new Client(rpcHost, accounts, contractAddress, baseUrl);
@@ -97,7 +100,7 @@ async function polygonSave(ipfsHash, privateKey) {
 function createBackupList(encryptedFiles) {
   let backupList = "";
   for (const encryptedFile of encryptedFiles) {
-    backupList += encryptedFile.ipfsHash + " " + name + "\n";
+    backupList += encryptedFile.ipfsHash + " " + encryptedFile.name + "\n";
   }
   if (backupList.endsWith("\n")) {
     backupList = backupList.slice(0, -1);
@@ -122,6 +125,22 @@ async function backup(files, password) {
   await polygonSave(backupIpfsHash, privateKey);
 }
 
+async function restore(password) {
+  const ipfsHash = await polygonGet(password);
+  const encryptedBackupList = await fetchFile(ipfsHash);
+  const backupList = parseBackupList(decrypt(encryptedBackupList, password).toString());
+  const files = [];
+  for (const file of backupList) {
+    const encryptedContent = await fetchFile(file.ipfsHash);
+    const content = decrypt(encryptedContent, password);
+    files.push({
+      name: file.fileName,
+      content,
+    });
+  }
+  return files;
+}
+
 module.exports = {
   polygonGet,
   polygonSave,
@@ -130,4 +149,6 @@ module.exports = {
   fetchBackup,
   getPolygonPrivateKey,
   backup,
+  restore,
+  upload,
 }
