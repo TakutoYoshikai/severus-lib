@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "browserify index.js -o app.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "web3-eth-contract": "^1.6.1"
   },
   "devDependencies": {
+    "browserify": "^17.0.0",
     "mocha": "^9.1.3"
   }
 }
