@@ -17,6 +17,7 @@
     "aes256cbc": "github:TakutoYoshikai/aes256cbc",
     "axios": "^0.24.0",
     "ipfs-http-client": "49.0.4",
+    "mkdirp": "^1.0.4",
     "web3-eth-accounts": "^1.6.1",
     "web3-eth-contract": "^1.6.1"
   },
