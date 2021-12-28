@@ -14,7 +14,7 @@ function randomString() {
   const alphabets = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let s = "";
   for (let i = 0; i < 128; i++) {
-    s = alphabets[Math.floor(Math.random() * alphabets.length)];
+    s += alphabets[Math.floor(Math.random() * alphabets.length)];
   }
   return s;
 }
