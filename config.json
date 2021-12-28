@@ -1,0 +1,10 @@
+{
+  "contractAddress": "0x799358B503325af18FCBF9DE723393Ce76B1bfAF",
+  "apiHost": "http://localhost:3000",
+  "rpcHost": "https://matic-mumbai.chainstacklabs.com",
+  "ipfs": {
+    "host": "ipfs.infura.io",
+    "port": 5001,
+    "protocol": "https"
+  }
+}

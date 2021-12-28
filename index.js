@@ -1,8 +1,9 @@
 const { encrypt, decrypt } = require("aes256cbc");
+const config = require("./config.json");
 
-const contractAddress = "0x799358B503325af18FCBF9DE723393Ce76B1bfAF";
-const baseUrl = "http://localhost:3000";
-const rpcHost = "https://matic-mumbai.chainstacklabs.com";
+const contractAddress = config.contractAddress;
+const baseUrl = config.apiHost;
+const rpcHost = config.rpcHost;
 
 const crypto = require("crypto");
 const Accounts = require("web3-eth-accounts");
@@ -11,11 +12,7 @@ const accounts = new Accounts(rpcHost);
 const Client = require("./client");
 
 const IpfsHttpClient = require("ipfs-http-client");
-const ipfsClient = IpfsHttpClient({
-  host: "ipfs.infura.io",
-  port: 5001,
-  protocol: "https",
-});
+const ipfsClient = IpfsHttpClient(config.ipfs);
 
 async function fetchFile(ipfsHash) {
   const response = await ipfsClient.get(ipfsHash);
@@ -80,7 +77,6 @@ function privateKeyToAddress(privateKey) {
 async function polygonGet(password) {
   const privateKey = getPolygonPrivateKey(password);
   const address = privateKeyToAddress(privateKey);
-  const baseUrl = "http://localhost:3000";
   const client = new Client(rpcHost, accounts, contractAddress, baseUrl);
   await client.init();
 
