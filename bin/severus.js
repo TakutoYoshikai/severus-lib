@@ -8,6 +8,16 @@ const path = require("path");
 const silverKeyPath = path.join(userHome, ".silver", "secret", "private-key.txt");
 
 const silverKey = fs.readFileSync(silverKeyPath, "utf8").trim();
+const mkdirp = require("mkdirp");
+
+function randomString() {
+  const alphabets = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let s = "";
+  for (let i = 0; i < 128; i++) {
+    s = alphabets[Math.floor(Math.random() * alphabets.length)];
+  }
+  return s;
+}
 
 function readdirRecursively (dir, files = []) {
   const paths = fs.readdirSync(dir);
@@ -64,5 +74,9 @@ function allFiles(dirPath) {
       }
     });
     await backup(files, silverKey);
+  } else if (process.argv[2] === "init") {
+    const silverSecretDir = path.join(userHome, ".silver", "secret");
+    mkdirp(silverSecretDir);
+    fs.writeFileSync(silverKeyPath, randomString());
   }
 })();
