@@ -20,7 +20,7 @@ async function fetchFile(ipfsHash) {
   const gatewayHost = config.ipfsGateway;
   const url = gatewayHost + "/" + ipfsHash;
   const response = await axios.get(url, { responseType: "arraybuffer" });
-  return Buffer.from(response.data);
+  return response.data;
 }
 
 async function upload(data) {
