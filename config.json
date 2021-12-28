@@ -6,5 +6,6 @@
     "host": "ipfs.infura.io",
     "port": 5001,
     "protocol": "https"
-  }
+  },
+  "ipfsGateway": "https://ipfs.infura.io/ipfs"
 }

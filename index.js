@@ -14,15 +14,13 @@ const Client = require("./client");
 const IpfsHttpClient = require("ipfs-http-client");
 const ipfsClient = IpfsHttpClient(config.ipfs);
 
+const axios = require("axios");
+
 async function fetchFile(ipfsHash) {
-  const response = await ipfsClient.get(ipfsHash);
-  for await (const data of response) {
-    let content = Buffer.alloc(0);
-    for await (const chunk of data.content) {
-      content = Buffer.concat([content, chunk]);
-    }
-    return content;
-  }
+  const gatewayHost = config.ipfsGateway;
+  const url = gatewayHost + "/" + ipfsHash;
+  const response = await axios.get(url, { responseType: "arraybuffer" });
+  return Buffer.from(response.data);
 }
 
 async function upload(data) {
