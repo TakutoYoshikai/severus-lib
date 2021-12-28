@@ -104,7 +104,8 @@ function createBackupList(encryptedFiles) {
   return backupList;
 }
 
-async function backup(files, password) {
+async function backup(files, _password) {
+  const password = _password + contractAddress;
   const encryptedFiles = [];
   for (const file of files) {
     const encryptedData = encrypt(file.content, password);
@@ -121,7 +122,8 @@ async function backup(files, password) {
   await polygonSave(backupIpfsHash, privateKey);
 }
 
-async function restore(password) {
+async function restore(_password) {
+  const password = _password + contractAddress;
   const ipfsHash = await polygonGet(password);
   const encryptedBackupList = await fetchFile(ipfsHash);
   const backupList = parseBackupList(decrypt(encryptedBackupList, password).toString());
