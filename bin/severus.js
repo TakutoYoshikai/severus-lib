@@ -50,7 +50,7 @@ function allFiles(dirPath) {
   });
 }
 
-(async () => {
+async function main() {
   if (process.argv[2] === "restore") {
     const files = await restore(silverKey);
     for (const file of files) {
@@ -79,4 +79,8 @@ function allFiles(dirPath) {
     mkdirp(silverSecretDir);
     fs.writeFileSync(silverKeyPath, randomString());
   }
-})();
+}
+
+if (require.main === module) {
+  main();
+}
