@@ -141,7 +141,42 @@ async function backup(files, _password) {
   const privateKey = getPolygonPrivateKey(password);
   await polygonSave(backupIpfsHash, privateKey, true);
 }
+async function getBackups(password) {
+  const files = await restore(password);
+  if (files.length !== 1 && files[0].name !== "severus-list.json"){
+    throw new Error("Failed to load backup list.");
+  }
+  const list = JSON.parse(files[0].content.toString());
+  return list;
+}
 
+async function addBackup(name, password) {
+  let files;
+  try {
+    files = await restore(password);
+  } catch(err) {
+    files = [
+      {
+        name: "severus-list.json",
+        content: Buffer.from("[]"),
+      }
+    ]
+  }
+  if (files.length !== 1 || files[0].name !== "severus-list.json") {
+    return;
+  }
+  const list = JSON.parse(files[0].content.toString());
+  if (!list.includes(name)) {
+    list.push(name);
+  }
+  const listText = JSON.stringify(list);
+  await backup([
+    {
+      name: "severus-list.json",
+      content: Buffer.from(listText),
+    }
+  ], password);
+}
 async function restore(_password) {
   const password = _password + contractAddress;
   const ipfsHash = await polygonGet(password);
@@ -170,4 +205,6 @@ module.exports = {
   restore,
   upload,
   share,
+  addBackup,
+  getBackups,
 }

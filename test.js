@@ -1,4 +1,4 @@
-const { polygonGet, polygonSave, getPolygonPrivateKey, restore, backup, upload, fetchFile, share } = require("./");
+const { addBackup, getBackups, polygonGet, polygonSave, getPolygonPrivateKey, restore, backup, upload, fetchFile, share } = require("./");
 const assert = require("assert");
 function randomString() {
   const alphabets = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -154,5 +154,19 @@ describe("share", function() {
       return;
     } catch(err) {
     }
+  });
+});
+
+describe("backup list", function () {
+  it ("addBackup and getBackups", async function() {
+    this.timeout(30 * 1000);
+    const password = randomString();
+    await addBackup("hello", password);
+    await addBackup("world", password);
+    await addBackup("hello", password);
+    const list = await getBackups(password);
+    assert.equal(list.length, 2);
+    assert.equal(list[0], "hello");
+    assert.equal(list[1], "world");
   });
 });
