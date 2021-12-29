@@ -14,6 +14,7 @@ npm install --save TakutoYoshikai/severus-lib
 ```
 
 **backup and restore**
+
 share is not rewritable. backup is rewritable.
 ```javascript
 const { share, restore, backup } = require("severus-lib");
