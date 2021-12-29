@@ -79,6 +79,9 @@ async function polygonGet(password) {
   await client.init();
 
   const ipfsHashes = await client.getIpfsHashes(address);
+  if (ipfsHashes.length === 0) {
+    throw new Error("This resource is not found.");
+  }
   return ipfsHashes[ipfsHashes.length - 1].ipfsHash;
 }
 
