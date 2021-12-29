@@ -1,5 +1,47 @@
-const { restore, backup, upload, fetchFile } = require("./");
+const { polygonGet, polygonSave, getPolygonPrivateKey, restore, backup, upload, fetchFile, share } = require("./");
 const assert = require("assert");
+function randomString() {
+  const alphabets = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let s = "";
+  for (let i = 0; i < 128; i++) {
+    s += alphabets[Math.floor(Math.random() * alphabets.length)];
+  }
+  return s;
+}
+
+describe("set data", function() {
+  it ("rewritable", async function() {
+    this.timeout(30 * 1000);
+    const password = randomString();
+    const privateKey = getPolygonPrivateKey(password);
+    await polygonSave("1", privateKey, true);
+    let res = await polygonGet(password);
+    assert.equal(res, "1");
+    await polygonSave("2", privateKey, true);
+    res = await polygonGet(password);
+    assert.equal(res, "2");
+  });
+  it ("not rewritable", async function() {
+    this.timeout(30 * 1000);
+    const password = randomString();
+    const privateKey = getPolygonPrivateKey(password);
+    await polygonSave("1", privateKey, false);
+    let res = await polygonGet(password);
+    assert.equal(res, "1");
+    polygonSave("2", privateKey, false).then(() => {
+      assert.fail();
+    });
+    polygonSave("2", privateKey, true).then(() => {
+      assert.fail();
+    });
+    res = await polygonGet(password);
+    assert.equal(res, "1");
+  });
+});
+
+describe("set backup", function() {
+
+});
 
 describe("fetch and upload", function () {
   const text = "hello world";
@@ -16,14 +58,6 @@ describe("fetch and upload", function () {
   });
 });
 
-function randomString() {
-  const alphabets = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let s = "";
-  for (let i = 0; i < 128; i++) {
-    s += alphabets[Math.floor(Math.random() * alphabets.length)];
-  }
-  return s;
-}
 describe("backup and restore", function() {
   it ("backup and restore", async function () {
     this.timeout(30 * 1000);
@@ -38,11 +72,65 @@ describe("backup and restore", function() {
         content: Buffer.from("hoge fuga"),
       }
     ], password);
-    const files = await restore(password);
+    let files = await restore(password);
     assert.equal(files.length, 2);
     assert.equal(files[0].name, "hello.txt");
     assert.equal(files[0].content.toString(), "hello world");
     assert.equal(files[1].name, "hoge.txt");
     assert.equal(files[1].content.toString(), "hoge fuga");
+    await backup([
+      {
+        name: "hello2.txt",
+        content: Buffer.from("hello world2"),
+      },
+      {
+        name: "hoge2.txt",
+        content: Buffer.from("hoge fuga2"),
+      }
+    ], password);
+    files = await restore(password);
+    assert.equal(files.length, 2);
+    assert.equal(files[0].name, "hello2.txt");
+    assert.equal(files[0].content.toString(), "hello world2");
+    assert.equal(files[1].name, "hoge2.txt");
+    assert.equal(files[1].content.toString(), "hoge fuga2");
+  });
+});
+
+describe("share", function() {
+  it ("not rewritable", async function() {
+    this.timeout(30 * 1000);
+    const password = randomString();
+    await share([
+      {
+        name: "hello.txt",
+        content: Buffer.from("hello world"),
+      },
+      {
+        name: "hoge.txt",
+        content: Buffer.from("hoge fuga"),
+      }
+    ], password);
+    let files = await restore(password);
+    assert.equal(files.length, 2);
+    assert.equal(files[0].name, "hello.txt");
+    assert.equal(files[0].content.toString(), "hello world");
+    assert.equal(files[1].name, "hoge.txt");
+    assert.equal(files[1].content.toString(), "hoge fuga");
+    try {
+      await share([
+        {
+          name: "hello.txt",
+          content: Buffer.from("hello world"),
+        },
+        {
+          name: "hoge.txt",
+          content: Buffer.from("hoge fuga"),
+        }
+      ], password);
+      assert.fail();
+      return;
+    } catch(err) {
+    }
   });
 });

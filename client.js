@@ -14,6 +14,22 @@ class Client {
     Contract.setProvider(this.rpcHost);
     this.contract = new Contract(abi, this.contractAddress);
   }
+  async createData(signed) {
+    return new Promise((resolve, reject) => {
+      axios.post(this.baseUrl + "/data",
+        signed,
+        {
+          headers: {
+            "content-type": "application/json",
+          }
+        }
+      ).then(response => {
+        resolve(response.data);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
   async createBackup(signed) {
     return new Promise((resolve, reject) => {
       axios.post(this.baseUrl + "/backup",

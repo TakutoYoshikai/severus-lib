@@ -1,5 +1,5 @@
 {
-  "contractAddress": "0x799358B503325af18FCBF9DE723393Ce76B1bfAF",
+  "contractAddress": "0xaE54B61226E1Fe6A166dE0AD765C5c6f2082F373",
   "apiHost": "http://localhost:3000",
   "rpcHost": "https://matic-mumbai.chainstacklabs.com",
   "ipfs": {

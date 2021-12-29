@@ -34,9 +34,14 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    "name": "addressToBackupId",
+    "name": "addressToBackupIds",
     "outputs": [
       {
         "internalType": "uint256",
@@ -117,6 +122,25 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "rewritable",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "string",
         "name": "ipfsHash",
         "type": "string"
@@ -125,6 +149,11 @@
         "internalType": "bytes",
         "name": "sig",
         "type": "bytes"
+      },
+      {
+        "internalType": "bool",
+        "name": "_rewritable",
+        "type": "bool"
       }
     ],
     "name": "setBackup",
@@ -133,4 +162,3 @@
     "type": "function"
   }
 ]
-
