@@ -7,9 +7,6 @@
     "test": "mocha",
     "build": "browserify index.js -o app.js"
   },
-  "bin": {
-    "severus": "./bin/severus.js"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
