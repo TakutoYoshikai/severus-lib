@@ -20,6 +20,12 @@ describe("set data", function() {
     await polygonSave("2", privateKey, true);
     res = await polygonGet(password);
     assert.equal(res, "2");
+    try {
+      await polygonSave("3", privateKey, false);
+      assert.fail();
+    } catch(err) {
+
+    }
   });
   it ("not rewritable", async function() {
     this.timeout(30 * 1000);
@@ -94,6 +100,22 @@ describe("backup and restore", function() {
     assert.equal(files[0].content.toString(), "hello world2");
     assert.equal(files[1].name, "hoge2.txt");
     assert.equal(files[1].content.toString(), "hoge fuga2");
+
+    try {
+      await share([
+        {
+          name: "hello2.txt",
+          content: Buffer.from("hello world2"),
+        },
+        {
+          name: "hoge2.txt",
+          content: Buffer.from("hoge fuga2"),
+        }
+      ], password);
+      assert.fail();
+    } catch(err) {
+
+    }
   });
 });
 
