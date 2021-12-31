@@ -169,9 +169,10 @@ async function addBackup(name, password) {
     return;
   }
   const list = JSON.parse(files[0].content.toString());
-  if (!list.includes(name)) {
-    list.push(name);
+  if (list.includes(name)) {
+    return;
   }
+  list.push(name);
   const listText = JSON.stringify(list);
   await backup([
     {
