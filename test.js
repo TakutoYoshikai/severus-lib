@@ -13,15 +13,14 @@ describe("set data", function() {
   it ("rewritable", async function() {
     this.timeout(30 * 1000);
     const password = randomString();
-    const privateKey = getPolygonPrivateKey(password);
-    await polygonSave("1", privateKey, true);
+    await polygonSave("1", password, true);
     let res = await polygonGet(password);
     assert.equal(res, "1");
-    await polygonSave("2", privateKey, true);
+    await polygonSave("2", password, true);
     res = await polygonGet(password);
     assert.equal(res, "2");
     try {
-      await polygonSave("3", privateKey, false);
+      await polygonSave("3", password, false);
       assert.fail();
     } catch(err) {
 
@@ -30,14 +29,13 @@ describe("set data", function() {
   it ("not rewritable", async function() {
     this.timeout(30 * 1000);
     const password = randomString();
-    const privateKey = getPolygonPrivateKey(password);
-    await polygonSave("1", privateKey, false);
+    await polygonSave("1", password, false);
     let res = await polygonGet(password);
     assert.equal(res, "1");
-    polygonSave("2", privateKey, false).then(() => {
+    polygonSave("2", password, false).then(() => {
       assert.fail();
     });
-    polygonSave("2", privateKey, true).then(() => {
+    polygonSave("2", password, true).then(() => {
       assert.fail();
     });
     res = await polygonGet(password);

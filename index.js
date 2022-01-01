@@ -85,7 +85,8 @@ async function polygonGet(password) {
   return ipfsHashes[ipfsHashes.length - 1].ipfsHash;
 }
 
-async function polygonSave(ipfsHash, privateKey, rewritable) {
+async function polygonSave(ipfsHash, password, rewritable) {
+  const privateKey = getPolygonPrivateKey(password);
   const client = new Client(rpcHost, accounts, contractAddress, baseUrl);
   await client.init();
   const signed = await client.signIpfsHash(ipfsHash, {
@@ -123,8 +124,7 @@ async function share(files, _password) {
   const backupList = createBackupList(encryptedFiles);
   const encryptedBackupList = encrypt(Buffer.from(backupList), password);
   const backupIpfsHash = await upload(encryptedBackupList);
-  const privateKey = getPolygonPrivateKey(password);
-  await polygonSave(backupIpfsHash, privateKey, false);
+  await polygonSave(backupIpfsHash, password, false);
 }
 
 async function backup(files, _password) {
@@ -141,8 +141,7 @@ async function backup(files, _password) {
   const backupList = createBackupList(encryptedFiles);
   const encryptedBackupList = encrypt(Buffer.from(backupList), password);
   const backupIpfsHash = await upload(encryptedBackupList);
-  const privateKey = getPolygonPrivateKey(password);
-  await polygonSave(backupIpfsHash, privateKey, true);
+  await polygonSave(backupIpfsHash, password, true);
 }
 async function getBackups(password) {
   const files = await restore(password);
